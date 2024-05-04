@@ -11,6 +11,7 @@ class Game:
     self.screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
     self.font = pygame.font.Font(FONT, TILESIZE)
     self.running = True
+    self.fps = 60
 
     # State machine
     self.states = []
@@ -35,13 +36,13 @@ class Game:
           self.running = False 
         elif event.key == pygame.K_SPACE:
           INPUTS['space'] = True
-        elif event.key in [pygame.K_A, pygame.K_LEFT]:
+        elif event.key in [pygame.K_a, pygame.K_LEFT]:
           INPUTS['left'] = True
-        elif event.key in [pygame.K_D, pygame.K_RIGHT]:
+        elif event.key in [pygame.K_d, pygame.K_RIGHT]:
           INPUTS['right'] = True
-        elif event.key in [pygame.K_W, pygame.K_UP]:
+        elif event.key in [pygame.K_w, pygame.K_UP]:
           INPUTS['up'] = True
-        elif event.key in [pygame.K_S, pygame.K_DOWN]:
+        elif event.key in [pygame.K_s, pygame.K_DOWN]:
           INPUTS['down'] = True
         elif event.key == pygame.K_LCTRL:
           INPUTS['left_click'] = True
@@ -54,13 +55,13 @@ class Game:
           INPUTS['escape'] = False
         elif event.key == pygame.K_SPACE:
           INPUTS['space'] = False
-        elif event.key in [pygame.K_A, pygame.K_LEFT]:
+        elif event.key in [pygame.K_a, pygame.K_LEFT]:
           INPUTS['left'] = False
-        elif event.key in [pygame.K_D, pygame.K_RIGHT]:
+        elif event.key in [pygame.K_d, pygame.K_RIGHT]:
           INPUTS['right'] = False
-        elif event.key in [pygame.K_W, pygame.K_UP]:
+        elif event.key in [pygame.K_w, pygame.K_UP]:
           INPUTS['up'] = False
-        elif event.key in [pygame.K_S, pygame.K_DOWN]:
+        elif event.key in [pygame.K_s, pygame.K_DOWN]:
           INPUTS['down'] = False
 
       if event.type == pygame.MOUSEWHEEL:
@@ -95,7 +96,7 @@ class Game:
 
   def loop(self):
     while self.running:
-      dt = self.clock.tick() / 1000
+      dt = self.clock.tick(self.fps) / 1000
       self.get_input()
       self.update(dt)
       self.draw()

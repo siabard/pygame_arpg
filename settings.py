@@ -1,5 +1,8 @@
+from pygame.math import Vector2 as vec 
+
+
 WIDTH, HEIGHT = 400, 224
-TILESIZE = 16
+TILESIZE = 12
 FONT = 'assets/homespun.ttf'
 
 # Dictionary for key bindings
@@ -20,7 +23,7 @@ INPUTS = {
 COLORS = {
   'black': (0, 0, 0),
   'white': (255, 255, 255),
-  'red': (255, 0, 0),
-  'green': (0, 255, 0),
-  'blue': (0, 0, 255),
+  'red': (255, 100, 100),
+  'green': (100, 255, 100),
+  'blue': (100, 100, 255),
 }
