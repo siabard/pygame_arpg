@@ -2,7 +2,7 @@ from pygame.math import Vector2 as vec
 
 
 WIDTH, HEIGHT = 400, 224
-TILESIZE = 12
+TILESIZE = 16
 FONT = 'assets/pixel_emulator.ttf'
 
 # Dictionary for key bindings
