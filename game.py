@@ -1,4 +1,5 @@
 import pygame, sys
+import os
 
 from settings import *
 from state import * 
@@ -90,6 +91,19 @@ class Game:
         elif event.button == 2:
           INPUTS['scroll_down'] = False
 
+  def get_images(self, path):
+    images = []
+    for file_name in os.listdir(path):
+      if file_name.endswith('.png'):
+        images.append(pygame.image.load(path + '/' + file_name).convert_alpha())
+    return images
+
+  def get_animations(self, path):
+    animations = {}
+    for file_name in os.listdir(path):
+      animations.update({file_name: self.get_images(path + file_name)})
+    return animations
+  
   def reset_inputs(self):
     for key in INPUTS:
       INPUTS[key] = False
@@ -100,6 +114,7 @@ class Game:
       self.get_input()
       self.update(dt)
       self.draw()
+      self.custom_cursor(self.screen)
       pygame.display.update() 
 
   def update(self, dt):
@@ -107,7 +122,14 @@ class Game:
 
   def draw(self):
     self.states[-1].draw(self.screen)
-  
+
+  def custom_cursor(self, screen):
+    pygame.mouse.set_visible(False)
+    cursor_img = pygame.image.load('assets/cursor.png').convert_alpha()
+    cursor_img.set_alpha(150)
+    cursor_rect = cursor_img.get_rect(center=pygame.mouse.get_pos())
+    screen.blit(cursor_img, cursor_rect.center)
+
 if __name__ == '__main__':
   game = Game()
   game.loop()

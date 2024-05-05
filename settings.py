@@ -3,7 +3,7 @@ from pygame.math import Vector2 as vec
 
 WIDTH, HEIGHT = 400, 224
 TILESIZE = 12
-FONT = 'assets/homespun.ttf'
+FONT = 'assets/pixel_emulator.ttf'
 
 # Dictionary for key bindings
 INPUTS = {

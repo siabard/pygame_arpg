@@ -51,8 +51,8 @@ class Scene(State):
     screen.fill(COLORS['green'])
     self.drawn_sprites.draw(screen)
     self.debugger([
-      str('FPS :' + str(round(self.game.clock.get_fps(), 2))),
-
+      str('FPS: ' + str(round(self.game.clock.get_fps(), 2))),
+      str('Vel: ' + str(round(self.player.vel, 2)))
     ])
   
   def debugger(self, debug_list):
