@@ -2,6 +2,7 @@ import pygame
 from settings import * 
 from characters import *
 from objects import Object
+from camera import Camera
 from pytmx.util_pygame import load_pygame
 class State:
   def __init__(self, game):
@@ -39,6 +40,7 @@ class SplashScreen(State):
 class Scene(State):
   def __init__(self, game):
     super().__init__(game)
+    self.camera = Camera(self)
     self.update_sprites = pygame.sprite.Group()
     self.drawn_sprites = pygame.sprite.Group()
     self.tmx_data = load_pygame('scenes/0/0.tmx')
@@ -51,24 +53,24 @@ class Scene(State):
 
     if 'blocks' in layers:
       for x, y, surf  in self.tmx_data.get_layer_by_name('blocks').tiles():
-        Object([self.drawn_sprites], (x * TILESIZE, y * TILESIZE), surf)
+        Object([self.drawn_sprites], (x * TILESIZE, y * TILESIZE), 'blocks', surf)
     
     if 'entries' in layers:
       for obj in self.tmx_data.get_layer_by_name('entries'):
         if obj.name == "0":
-          self.player = Player(self.game, self, [self.update_sprites, self.drawn_sprites], (obj.x, obj.y), 'player')
+          self.player = Player(self.game, self, [self.update_sprites, self.drawn_sprites], (obj.x, obj.y), 'characters', 'player')
         
     
 
   def update(self, dt):
     self.update_sprites.update(dt)
+    self.camera.update(dt, self.player)
     if INPUTS['space']:
       self.exit_state()
       self.game.reset_inputs() 
 
   def draw(self, screen):
-    screen.fill(COLORS['green'])
-    self.drawn_sprites.draw(screen)
+    self.camera.draw(screen, self.drawn_sprites)
     self.debugger([
       str('FPS: ' + str(round(self.game.clock.get_fps(), 2))),
       str('Vel: ' + str(round(self.player.vel, 2)))

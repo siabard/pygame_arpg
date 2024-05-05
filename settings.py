@@ -27,3 +27,5 @@ COLORS = {
   'green': (100, 255, 100),
   'blue': (100, 100, 255),
 }
+
+LAYERS = ['background', 'objects', 'blocks', 'characters', 'particles', 'foreground']

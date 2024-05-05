@@ -2,10 +2,11 @@ import pygame
 from settings import *
 
 class NPC(pygame.sprite.Sprite):
-  def __init__(self, game, scene, group, pos, name):
+  def __init__(self, game, scene, group, pos, z, name):
     super().__init__(group)
     self.game = game
     self.scene = scene
+    self.z = z
     self.name = name
     self.frame_index = 0
     self.import_images(f'assets/characters/{self.name}/')
@@ -58,8 +59,8 @@ class NPC(pygame.sprite.Sprite):
 
 
 class Player(NPC):
-  def __init__(self, game, scene, group, pos, name):
-    super().__init__(game, scene, group, pos, name)
+  def __init__(self, game, scene, group, pos, z, name):
+    super().__init__(game, scene, group, pos, z, name)
   
   def movement(self):
     self.acc.x = 0
