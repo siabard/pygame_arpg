@@ -1,7 +1,7 @@
 import pygame 
 from settings import * 
 from characters import *
-from objects import Object
+from objects import Object, Wall
 from camera import Camera
 from pytmx.util_pygame import load_pygame
 class State:
@@ -43,6 +43,8 @@ class Scene(State):
     self.camera = Camera(self)
     self.update_sprites = pygame.sprite.Group()
     self.drawn_sprites = pygame.sprite.Group()
+    self.block_sprites = pygame.sprite.Group()
+
     self.tmx_data = load_pygame('scenes/0/0.tmx')
     self.create_scene()
   
@@ -53,14 +55,13 @@ class Scene(State):
 
     if 'blocks' in layers:
       for x, y, surf  in self.tmx_data.get_layer_by_name('blocks').tiles():
-        Object([self.drawn_sprites], (x * TILESIZE, y * TILESIZE), 'blocks', surf)
+        Wall([self.block_sprites, self.drawn_sprites], (x * TILESIZE, y * TILESIZE), 'blocks', surf)
     
     if 'entries' in layers:
       for obj in self.tmx_data.get_layer_by_name('entries'):
         if obj.name == "0":
-          self.player = Player(self.game, self, [self.update_sprites, self.drawn_sprites], (obj.x, obj.y), 'characters', 'player')
-        
-    
+          self.player = Player(self.game, self, [self.update_sprites, self.drawn_sprites], (obj.x, obj.y), 'blocks', 'player')
+      
 
   def update(self, dt):
     self.update_sprites.update(dt)
