@@ -29,3 +29,9 @@ COLORS = {
 }
 
 LAYERS = ['background', 'objects', 'blocks', 'characters', 'particles', 'foreground']
+
+SCENE_DATA = {
+  0: {1:1, 3:2},
+  1: {1:0, 2:2},
+  2: {2:1, 3:0}
+}

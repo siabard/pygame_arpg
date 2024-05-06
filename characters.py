@@ -1,5 +1,6 @@
 import pygame 
 from settings import *
+from character_state import *
 
 class NPC(pygame.sprite.Sprite):
   def __init__(self, game, scene, group, pos, z, name):
@@ -18,6 +19,8 @@ class NPC(pygame.sprite.Sprite):
     self.acc = vec()
     self.vel = vec()
     self.fric = -15
+    self.move = {'left': False, 'right': False, 'up': False, 'down': False}
+    self.state = Idle(self)
 
   def import_images(self, path):
     self.animations = self.game.get_animations(path)
@@ -35,6 +38,24 @@ class NPC(pygame.sprite.Sprite):
 
     self.image = self.animations[state][int(self.frame_index)]
 
+  def get_direction(self):
+    angle = self.vel.angle_to(vec(0, 1))
+    angle = (angle + 360) % 360
+
+    if 45 <= angle < 135: return "right"
+    elif 135 <= angle < 225: return "up"
+    elif 225 <= angle < 315: return "left"
+    else: return "down"
+  
+  def movement(self):
+    self.acc.x = 0
+    self.acc.y = 0
+
+    if self.move['left']: self.acc.x += -self.force
+    if self.move['right']: self.acc.x += -self.force
+    if self.move['up']: self.acc.y += -self.force
+    if self.move['down']: self.acc.y += self.force
+
   def get_collide_list(self, group):
     collidable_list = pygame.sprite.spritecollide(self, group, False)
     return collidable_list
@@ -51,14 +72,14 @@ class NPC(pygame.sprite.Sprite):
           if self.vel.y < 0: self.hitbox.top = sprite.hitbox.bottom
           self.rect.centery = self.hitbox.centery
 
-  def physics(self, dt):
-    self.acc.x += self.vel.x * self.fric
+  def physics(self, dt, fric):
+    self.acc.x += self.vel.x * fric
     self.vel.x += self.acc.x * dt
     self.hitbox.centerx += self.vel.x * dt + (self.vel.x / 2) * dt
     self.rect.centerx = self.hitbox.centerx
     self.collision('x', self.scene.block_sprites)
 
-    self.acc.y += self.vel.y * self.fric
+    self.acc.y += self.vel.y * fric
     self.vel.y += self.acc.y * dt
     self.hitbox.centery += self.vel.y * dt + (self.vel.y / 2) * dt 
     self.rect.centery = self.hitbox.centery
@@ -67,37 +88,21 @@ class NPC(pygame.sprite.Sprite):
     if self.vel.magnitude() >= self.speed:
       self.vel = self.vel.normalize() * self.speed
 
+  def change_state(self):
+    new_state = self.state.enter_state(self)
+    if new_state: self.state = new_state
+    else: self.state 
 
-  def update(self, dt):
-    self.physics(dt)
+  def do_animate(self, dt):
     if self.vel.magnitude() < 1:
       self.animate('idle', 15 * dt)
     else:
       self.animate('run', 15 * dt)
-
-  def draw(self, screen):
-    pass
-
-
-class Player(NPC):
-  def __init__(self, game, scene, group, pos, z, name):
-    super().__init__(game, scene, group, pos, z, name)
-  
-  def movement(self):
-    self.acc.x = 0
-    self.acc.y = 0
-
-    if INPUTS['left']:
-      self.acc.x += -self.force
-    if INPUTS['right']:
-      self.acc.x += self.force
-    if INPUTS['up']:
-      self.acc.y += -self.force 
-    if INPUTS['down']:
-      self.acc.y += self.force
-
     
+    if self.get_direction() == 'left': self.image = pygame.transform.flip(self.image, True, False)
+
+
   def update(self, dt):
-    self.movement()
-    super().update(dt)
+    self.change_state()
+    self.state.update(dt, self)
 
